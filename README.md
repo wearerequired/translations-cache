@@ -20,7 +20,7 @@ Example of a `composer.json` for a site:
   "name": "wearerequired/something",
   "require": {
     "koodimonni/composer-dropin-installer": "^1.0",
-    "wearerequired/translations-cache": "^1.0",
+    "wearerequired/translations-cache": "^1.0"
   },
   "extra": {
     "dropin-paths": {
