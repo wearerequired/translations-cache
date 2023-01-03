@@ -3,6 +3,13 @@
   "description": "Reduces file reads for translations by caching the first read via APCu.",
   "license": "GPL-2.0-or-later",
   "type": "wordpress-muplugin",
+  "keywords": [
+    "wordpress",
+    "translations",
+    "cache",
+    "performance",
+    "apcu"
+  ],
   "authors": [
     {
       "name": "required",
