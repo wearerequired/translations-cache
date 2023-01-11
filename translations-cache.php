@@ -10,6 +10,8 @@
  * Update URI:  false
  */
 
+declare( strict_types=1 );
+
 namespace Required\TranslationsCache;
 
 // Default cache expiration time in seconds.
