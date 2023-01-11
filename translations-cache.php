@@ -15,7 +15,7 @@ namespace Required\TranslationsCache;
 // Default cache expiration time in seconds.
 // Note: There's currently no cache invalidation but you can set the
 // `TRANSLATIONS_CACHE_KEY_SALT` environment variable to invalidate the cache.
-const DEFAULT_EXPIRE = 12 * HOUR_IN_SECONDS;
+const DEFAULT_EXPIRE = 6 * HOUR_IN_SECONDS;
 
 /**
  * Adds the APCu PHP module to the list of required modules.
