@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Translations Cache
  * Description: Reduces file reads for translations by caching the first read via APCu.
- * Version:     1.0.0
+ * Version:     1.1.0
  * Author:      required
  * Author URI:  https://required.com/
  * License:     GPL-2.0+
@@ -70,7 +70,12 @@ function load_script_translations( $translations, $file, string $handle, string 
 		add_filter( 'pre_load_script_translations', __NAMESPACE__ . '\load_script_translations', 9999, 4 );
 
 		// Cache the result.
-		apcu_add( $cache_key, $translations, DEFAULT_EXPIRE );
+		if ( false === $translations ) {
+			$expiration = HOUR_IN_SECONDS;
+		} else {
+			$expiration = DEFAULT_EXPIRE;
+		}
+		apcu_add( $cache_key, $translations, $expiration );
 	}
 
 	return $translations;
@@ -107,7 +112,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			apcu_add( $cache_key, false, DEFAULT_EXPIRE );
+			apcu_add( $cache_key, false, HOUR_IN_SECONDS );
 
 			// Return true since we still override the .mo file loading.
 			return true;
@@ -117,7 +122,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		if ( ! $mo->import_from_file( $mofile ) ) {
 			$wp_textdomain_registry->set( $domain, $locale, false );
 
-			apcu_add( $cache_key, false, DEFAULT_EXPIRE );
+			apcu_add( $cache_key, false, HOUR_IN_SECONDS );
 
 			// Return true since we still override the .mo file loading.
 			return true;
