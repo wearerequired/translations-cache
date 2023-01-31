@@ -120,7 +120,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 			$wp_textdomain_registry->set( $domain, $locale, false );
 
 			// Use a short cache time to avoid repeated failed lookups.
-			cache_add( $cache_key, $data, HOUR_IN_SECONDS );
+			cache_add( $cache_key, false, HOUR_IN_SECONDS );
 
 			// Return true since we still override the .mo file loading.
 			return true;
