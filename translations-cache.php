@@ -108,8 +108,10 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			// Nothing to cache. In a perfect world, this would be cached too and return true
-			// but this will prevent looking up translations in the plugin/theme directory.
+			// Cache the result but still return false to not prevent
+			// looking up translations in the plugin/theme directory.
+			cache_add( $cache_key, false, DEFAULT_EXPIRE );
+
 			return false;
 		}
 
