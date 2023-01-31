@@ -99,8 +99,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 	$locale = determine_locale();
 
 	$cache_key_salt = getenv( 'TRANSLATIONS_CACHE_KEY_SALT' ) ?: '';
-	// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize, PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-	$cache_key = 'load_textdomain:' . md5( $cache_key_salt . $locale . serialize( \func_get_args() ) );
+	$cache_key      = 'load_textdomain:' . md5( $cache_key_salt . $locale . $domain . $mofile );
 
 	$found = false;
 	$data  = cache_fetch( $cache_key, $found );
@@ -109,17 +108,19 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			cache_add( $cache_key, $data, HOUR_IN_SECONDS );
+			// Cache the result but still return false to not prevent
+			// looking up translations in the plugin/theme directory.
+			cache_add( $cache_key, false, DEFAULT_EXPIRE );
 
-			// Return true since we still override the .mo file loading.
-			return true;
+			return false;
 		}
 
 		$mo = new \MO();
 		if ( ! $mo->import_from_file( $mofile ) ) {
 			$wp_textdomain_registry->set( $domain, $locale, false );
 
-			cache_add( $cache_key, $data, HOUR_IN_SECONDS );
+			// Use a short cache time to avoid repeated failed lookups.
+			cache_add( $cache_key, false, HOUR_IN_SECONDS );
 
 			// Return true since we still override the .mo file loading.
 			return true;
@@ -139,6 +140,8 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		}
 
 		$l10n[ $domain ] = &$mo; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		return true;
 	} elseif ( \is_array( $data ) ) { // false if a mo file was not read/found.
 		$mo          = new \MO();
 		$mo->entries = $data['entries'];
@@ -149,10 +152,12 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		}
 
 		$l10n[ $domain ] = &$mo; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		return true;
 	}
 
-	// Return true since we still override the .mo file loading.
-	return true;
+	// Return false since we had nothing to/in cache.
+	return false;
 }
 add_filter( 'override_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
 
