@@ -109,7 +109,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			// Nothing to cache. In a perfect world, this would be cached to and return true
+			// Nothing to cache. In a perfect world, this would be cached too and return true
 			// but this will prevent looking up translations in the plugin/theme directory.
 			return false;
 		}
@@ -155,7 +155,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 		return true;
 	}
 
-	// Return false since we had nothing in cache.
+	// Return false since we had nothing to/in cache.
 	return false;
 }
 add_filter( 'override_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
