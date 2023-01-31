@@ -99,7 +99,7 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 	$locale = determine_locale();
 
 	$cache_key_salt = getenv( 'TRANSLATIONS_CACHE_KEY_SALT' ) ?: '';
-	$cache_key = 'load_textdomain:' . md5( $cache_key_salt . $locale . $domain . $mofile );
+	$cache_key      = 'load_textdomain:' . md5( $cache_key_salt . $locale . $domain . $mofile );
 
 	$found = false;
 	$data  = cache_fetch( $cache_key, $found );
