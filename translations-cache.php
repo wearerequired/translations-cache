@@ -84,9 +84,10 @@ add_filter( 'pre_load_script_translations', __NAMESPACE__ . '\load_script_transl
  * @param bool   $override Whether to override the .mo file loading. Default false.
  * @param string $domain   Text domain. Unique identifier for retrieving translated strings.
  * @param string $mofile   Path to the MO file.
+ * @param string $locale   Optional. Locale. Default is the current locale.
  * @return bool True if the .mo file was loaded, false otherwise.
  */
-function load_textdomain( bool $override, string $domain, string $mofile ): bool {
+function load_textdomain( bool $override, string $domain, string $mofile, ?string $locale = null ): bool {
 	// Another plugin has already overridden the loading.
 	if ( false !== $override ) {
 		return $override;
@@ -95,7 +96,9 @@ function load_textdomain( bool $override, string $domain, string $mofile ): bool
 	/** @var \WP_Textdomain_Registry $wp_textdomain_registry */
 	global $l10n, $wp_textdomain_registry;
 
-	$locale = determine_locale();
+	if ( ! $locale ) {
+		$locale = determine_locale();
+	}
 
 	$cache_key_salt = getenv( 'TRANSLATIONS_CACHE_KEY_SALT' ) ?: '';
 	$cache_key      = 'load_textdomain:' . md5( $cache_key_salt . $locale . $domain . $mofile );
