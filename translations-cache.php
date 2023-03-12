@@ -170,7 +170,7 @@ add_filter( 'override_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999
  * @param mixed  $data   The contents to store in the cache.
  * @param int    $expire Optional. When to expire the cache contents, in seconds.
  *                       Default 0 (no expiration).
- * @return bool|array Returns true if something has effectively been added into the cache,
+ * @return bool|array<string,mixed> Returns true if something has effectively been added into the cache,
  *                    false otherwise. Second syntax returns array with error keys.
  */
 function cache_add( string $key, $data, int $expire = 0 ) {
