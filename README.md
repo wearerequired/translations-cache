@@ -32,6 +32,7 @@ Example of a `composer.json` for a site:
     }
   }
 }
+```
 
 <br>
 
