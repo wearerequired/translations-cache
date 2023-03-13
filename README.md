@@ -1,6 +1,8 @@
 # Translations Cache
 
-WordPress mu-plugin to reduces file reads for translations by caching the first read via APCu.
+Simple WordPress must-use plugin to reduce file reads for gettext (.mo) and JavaScript (.json) translations by caching the first read via APCu.
+
+By default the cache TTL is set to six hours without any automated cache invalidation. You can set the `TRANSLATIONS_CACHE_KEY_SALT` environment variable to change the key for the cache which will force the plugin to read from a fresh cache entry.
 
 ## Installation
 
