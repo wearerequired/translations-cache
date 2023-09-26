@@ -110,11 +110,9 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			// Cache the result but still return false to not prevent
-			// looking up translations in the plugin/theme directory.
 			cache_add( $cache_key, false, DEFAULT_EXPIRE );
 
-			return false;
+			return true;
 		}
 
 		$mo = new \MO();
@@ -158,10 +156,10 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 		return true;
 	}
 
-	// Return false since we had nothing to/in cache.
-	return false;
+	// Return true since we still override the .mo file loading.
+	return true;
 }
-add_filter( 'override_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
+add_filter( 'pre_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
 
 /**
  * Caches data to APCu, only if it's not already stored.
