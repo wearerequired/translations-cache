@@ -1,13 +1,16 @@
 <?php // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 /**
  * Plugin Name: Translations Cache
+ * Plugin URI: https://github.com/wearerequired/translations-cache
  * Description: Reduces file reads for translations by caching the first read via APCu.
- * Version:     1.1.0
- * Author:      required
- * Author URI:  https://required.com/
- * License:     GPL-2.0+
+ * Version: 2.0.0-beta.1
+ * Requires at least: 6.3
+ * Requires PHP: 7.4
+ * Author: required
+ * Author URI: https://required.com/
+ * License: GPL v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Update URI:  false
+ * Update URI: false
  */
 
 declare( strict_types=1 );
