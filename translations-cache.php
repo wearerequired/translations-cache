@@ -1,13 +1,16 @@
 <?php // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 /**
  * Plugin Name: Translations Cache
+ * Plugin URI: https://github.com/wearerequired/translations-cache
  * Description: Reduces file reads for translations by caching the first read via APCu.
- * Version:     1.1.0
- * Author:      required
- * Author URI:  https://required.com/
- * License:     GPL-2.0+
+ * Version: 2.0.0-beta.1
+ * Requires at least: 6.3
+ * Requires PHP: 7.4
+ * Author: required
+ * Author URI: https://required.com/
+ * License: GPL v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Update URI:  false
+ * Update URI: false
  */
 
 declare( strict_types=1 );
@@ -81,16 +84,16 @@ add_filter( 'pre_load_script_translations', __NAMESPACE__ . '\load_script_transl
 /**
  * Caches reading gettext translation files.
  *
- * @param bool   $override Whether to override the .mo file loading. Default false.
- * @param string $domain   Text domain. Unique identifier for retrieving translated strings.
- * @param string $mofile   Path to the MO file.
- * @param string $locale   Optional. Locale. Default is the current locale.
+ * @param bool|null   $loaded The result of loading a .mo file. Default null.
+ * @param string      $domain Text domain. Unique identifier for retrieving translated strings.
+ * @param string      $mofile Path to the MO file.
+ * @param string|null $locale Locale.
  * @return bool True if the .mo file was loaded, false otherwise.
  */
-function load_textdomain( bool $override, string $domain, string $mofile, ?string $locale = null ): bool {
+function load_textdomain( ?bool $loaded, string $domain, string $mofile, ?string $locale = null ): bool {
 	// Another plugin has already overridden the loading.
-	if ( false !== $override ) {
-		return $override;
+	if ( null !== $loaded ) {
+		return $loaded;
 	}
 
 	/** @var \WP_Textdomain_Registry $wp_textdomain_registry */
@@ -110,11 +113,9 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 		$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Core filter.
 
 		if ( ! is_readable( $mofile ) ) {
-			// Cache the result but still return false to not prevent
-			// looking up translations in the plugin/theme directory.
 			cache_add( $cache_key, false, DEFAULT_EXPIRE );
 
-			return false;
+			return true;
 		}
 
 		$mo = new \MO();
@@ -124,7 +125,6 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 			// Use a short cache time to avoid repeated failed lookups.
 			cache_add( $cache_key, false, HOUR_IN_SECONDS );
 
-			// Return true since we still override the .mo file loading.
 			return true;
 		}
 
@@ -142,8 +142,6 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 		}
 
 		$l10n[ $domain ] = &$mo; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-
-		return true;
 	} elseif ( \is_array( $data ) ) { // false if a mo file was not read/found.
 		$mo          = new \MO();
 		$mo->entries = $data['entries'];
@@ -154,14 +152,11 @@ function load_textdomain( bool $override, string $domain, string $mofile, ?strin
 		}
 
 		$l10n[ $domain ] = &$mo; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-
-		return true;
 	}
 
-	// Return false since we had nothing to/in cache.
-	return false;
+	return true;
 }
-add_filter( 'override_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
+add_filter( 'pre_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 );
 
 /**
  * Caches data to APCu, only if it's not already stored.
