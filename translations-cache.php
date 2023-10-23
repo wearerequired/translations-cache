@@ -115,7 +115,8 @@ function load_textdomain( ?bool $loaded, string $domain, string $mofile, ?string
 		if ( ! is_readable( $mofile ) ) {
 			cache_add( $cache_key, false, DEFAULT_EXPIRE );
 
-			return true;
+			// Return false so the default fallback loading can apply.
+			return false;
 		}
 
 		$mo = new \MO();
@@ -152,6 +153,9 @@ function load_textdomain( ?bool $loaded, string $domain, string $mofile, ?string
 		}
 
 		$l10n[ $domain ] = &$mo; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	} elseif ( false === $data ) {
+		// Return false so the default fallback loading can apply.
+		return false;
 	}
 
 	return true;
