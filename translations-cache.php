@@ -3,7 +3,7 @@
  * Plugin Name: Translations Cache
  * Plugin URI: https://github.com/wearerequired/translations-cache
  * Description: Reduces file reads for translations by caching the first read via APCu.
- * Version: 2.0.0-beta.1
+ * Version: 2.0.0-beta.2
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * Author: required
