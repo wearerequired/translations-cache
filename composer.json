@@ -23,7 +23,7 @@
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || ^1.0",
-    "wearerequired/coding-standards": "^5.0"
+    "wearerequired/coding-standards": "^6.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
