@@ -40,7 +40,7 @@ function site_status_test_apcu_php_module( array $modules ): array {
 add_filter( 'site_status_test_php_modules', __NAMESPACE__ . '\site_status_test_apcu_php_module' );
 
 // Bail early if APCu is not available.
-if ( ! function_exists( 'apcu_enabled' ) || ! apcu_enabled() ) {
+if ( ! \function_exists( 'apcu_enabled' ) || ! apcu_enabled() ) {
 	return;
 }
 
@@ -129,7 +129,7 @@ function load_textdomain( ?bool $loaded, string $domain, string $mofile, ?string
 			return true;
 		}
 
-		$wp_textdomain_registry->set( $domain, $locale, dirname( $mofile ) );
+		$wp_textdomain_registry->set( $domain, $locale, \dirname( $mofile ) );
 
 		// Cache the translations.
 		$data = [
@@ -172,7 +172,7 @@ add_filter( 'pre_load_textdomain', __NAMESPACE__ . '\load_textdomain', 9999, 4 )
  * @return bool|array<string,mixed> Returns true if something has effectively been added into the cache,
  *                    false otherwise. Second syntax returns array with error keys.
  */
-function cache_add( string $key, $data, int $expire = 0 ) {
+function cache_add( string $key, mixed $data, int $expire = 0 ): bool|array {
 	// Alter provided expire values to be within -10%/+20% of the provided time,
 	// to spread expires over a wider window.
 	$expire = rand( \intval( $expire * 0.9 ), \intval( $expire * 1.2 ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
@@ -188,6 +188,6 @@ function cache_add( string $key, $data, int $expire = 0 ) {
  *                         Disambiguates a return of false, a storable value. Default null.
  * @return mixed The stored variable or array of variables on success; false on failure.
  */
-function cache_fetch( string $key, ?bool &$found = null ) {
+function cache_fetch( string $key, ?bool &$found = null ): mixed {
 	return apcu_fetch( $key, $found );
 }
